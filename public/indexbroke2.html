@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Fidgets - Vertical Lines</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+<style>
+  * {
+    font-family: 'Lato';
+  }
+
+  #svgcanvas {
+    background-color: black;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    height: calc(100% - 30px);
+    width: calc(100% - 30px);
+  }
+</style>
+
+<body onload='setup();'>
+  <svg id="svgcanvas" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Filter: neongreen -->
+      <filter id="neongreen" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" /> -->
+          <!-- <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="limegreen-blur" in="blur-merged" type="matrix" values="
+                               0.6 0 0 0 0
+                               0 1 0 0 0
+                               0 0 0 0 0
+                               0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="limegreen-blur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonyellow -->
+      <filter id="neonyellow" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" />
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 0.95 0 0 0 0
+                                 0 0.95 0 0 0
+                                 0 0 0.08 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonblue -->
+      <filter id="neonblue" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" />
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 0 0 0 0 0
+                                 0 0.98 0 0 0
+                                 0 0 1 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+    </defs>
+  </svg>
+</body>
+
+<script>
+  // GLOBAL VARIABLES ---------------------------------------------- //
+  //TIMING & ANIMATION ENGINE //////////////////////////////
+  var FRAMERATE = 60.0;
+  var MSPERFRAME = 1000.0 / FRAMERATE;
+  var SECPERFRAME = 1.0 / FRAMERATE;
+  var PXPERSEC = 100.0;
+  var PXPERMS = PXPERSEC / 1000.0;
+  var PXPERFRAME = PXPERSEC / FRAMERATE;
+  var framect = 0;
+  var delta = 0.0;
+  var lastFrameTimeMs = 0.0;
+  var pieceClock = 0.0;
+  var clockadj = 0.0;
+  // SVG ///////////////////////////////////////////////////
+  var svgcanvas = document.getElementById('svgcanvas');
+  var svgNS = "http://www.w3.org/2000/svg";
+  var canvasW = window.innerWidth - 30
+  var canvasH = window.innerHeight - 30;
+  // LINES /////////////////////////////////////////////////
+  var linesSet;
+  var numLines = 2;
+  var CENTERPITCHFREQ = 333;
+  var CENTERPITCHMIDI = ftom(CENTERPITCHFREQ);
+  var pitchChoices = [
+    (CENTERPITCHMIDI + 1),
+    (CENTERPITCHMIDI - 1),
+    (CENTERPITCHMIDI + 8),
+    (CENTERPITCHMIDI - 8),
+    (CENTERPITCHMIDI + 6),
+    (CENTERPITCHMIDI - 6)
+  ];
+  var accelMin = 0.992;
+  var accelMax = 1.008;
+  // var maxSpd = 2.7;
+  // var minSpd = 0.33333;
+  var maxSpd = 3.3;
+  var minSpd = 0.45;
+  var spdChgGate = true;
+  // AUDIO /////////////////////////////////////////////////
+  // SET UP ----------------------------------------------------------- //
+  function setup() {
+    linesSet = mkLines(numLines);
+    window.addEventListener('resize', winResize, false);
+    requestAnimationFrame(animationEngine);
+  }
+  // FUNCTION mkOscillators ------------------------------------------------- //
+  function mkOscillators(tNumLines) {
+    var tempOsc = [];
+    // for (var i; i < numLines; i++) {
+    //   var temppitch = choose(pitchChoices);
+    //   var oscillator = audioCtx.createOscillator();
+    //   oscillator.type = 'sine';
+    //   oscillator.frequency.setValueAtTime(temppitch, audioCtx.currentTime);
+    //   oscillator.connect(audioCtx.destination);
+    //   oscillator.start();
+    //   tempOsc.push([oscillator, temppitch]);
+    // }
+    // return tempOsc;
+  }
+  // FUNCTION: newCtrPitch ---------------------------------------------- //
+  function newCtrPitch() {
+    var newOscNum = rrandInt(0, oscillators.length);
+    oscillators[newOscNum].frequency.setValueAtTime(CENTERPITCHFREQ, audioCtx.currentTime);
+    for(var i=0;i<oscillators.length;i++){
+      if(i!=newOscNum){
+        oscillators[newOscNum][1] = choose(pitchChoices);
+      }
+    }
+  }
+  // FUNCTION mkLines ------------------------------------------------- //
+  function mkLines(tNumLines) {
+    var lines = [];
+    for (var i = 0; i < tNumLines; i++) {
+      var line = document.createElementNS(svgNS, 'line');
+      line.setAttributeNS(null, 'x1', 1);
+      line.setAttributeNS(null, 'x2', 1);
+      line.setAttributeNS(null, 'y1', 3);
+      line.setAttributeNS(null, 'y2', canvasH - 3);
+      line.setAttributeNS(null, 'stroke', 'rgb(255,255,255)');
+      line.setAttributeNS(null, 'stroke-width', 7);
+      line.setAttributeNS(null, 'filter', 'url(#neongreen)'); //make a switch
+      line.setAttributeNS(null, 'stroke-linecap', 'round');
+      svgcanvas.appendChild(line);
+      var tempSpd = rrand(minSpd, maxSpd);
+      var tempAccel = rrand(accelMin, accelMax);
+      var tempPitch = choose(pitchChoices);
+      var frameOn = rrand(2, 10) * FRAMERATE;
+      var frameOff = rrand(30, 60) * FRAMERATE;
+      var tempLineGroup = [line, tempSpd, tempAccel, 1, tempPitch, frameOn, frameOff];
+      lines.push(tempLineGroup);
+    }
+    return lines;
+  }
+  // ANIMATION ENGINE ----------------------------------------------- //
+  function animationEngine(timestamp) {
+    delta += timestamp - lastFrameTimeMs;
+    lastFrameTimeMs = timestamp;
+    while (delta >= MSPERFRAME) {
+      update(MSPERFRAME);
+      delta -= MSPERFRAME;
+    }
+    requestAnimationFrame(animationEngine);
+  }
+  // UPDATE ---------------------------------------------------------- //
+  function update(MSPERFRAME) {
+    // Clocks ////////////////////////////////////////////////
+    framect++;
+    pieceClock += MSPERFRAME;
+    pieceClock = pieceClock - clockadj;
+    // Lines /////////////////////////////////////////////////
+    for (var i = 0; i < linesSet.length; i++) {
+      var oldX = parseFloat(linesSet[i][0].getAttributeNS(null, 'x1'));
+      var oldSpd = linesSet[i][1];
+      var oldAcc = linesSet[i][2];
+      var oldDir = linesSet[i][3];
+      var newSpd, newAcc, newDir, newX;
+      var chgSpd;
+      // Boundry Detection //////////////////////////////////
+      if (oldX > canvasW) {
+        newDir = -1;
+      } else if (oldX < 0) {
+        newDir = 1;
+      } else {
+        newDir = oldDir;
+      }
+      // Has Accel/Decel made the line too fast/slow?
+      if (oldSpd > maxSpd || oldSpd < minSpd) {
+        console.log("n: " + norm(oldAcc, accelMin, accelMax));
+        console.log("s: " + scale((1 - norm(oldAcc, accelMin, accelMax)), 0.0, 1.0, accelMin, accelMax));
+
+        newAcc = scale((1 - norm(oldAcc, accelMin, accelMax)), 0.0, 1.0, accelMin, accelMax);
+        if (oldSpd >= maxSpd) {
+          chgSpd = maxSpd;
+        } else if (oldSpd <= minSpd) {
+          chgSpd = minSpd;
+        }
+        spdChgGate = false;
+      } else {
+        newAcc = oldAcc;
+      }
+      if (spdChgGate) {
+        newSpd = oldSpd * newAcc;
+      } else {
+        newSpd = chgSpd * newAcc;
+        spdChgGate = true;
+      }
+      newX = oldX + (newSpd * newDir);
+      linesSet[i][0].setAttributeNS(null, "x1", newX);
+      linesSet[i][0].setAttributeNS(null, "x2", newX);
+      linesSet[i][1] = newSpd;
+      linesSet[i][2] = newAcc;
+      linesSet[i][3] = newDir;
+    }
+  }
+  // FUNCTION: winResize ---------------------------------------------- //
+  function winResize() {
+    canvasW = window.innerWidth - 30
+    canvasH = window.innerHeight - 30;
+    for (var i = 0; i < linesSet.length; i++) {
+      linesSet[i][0].setAttributeNS(null, 'y2', canvasH - 33);
+    }
+  }
+  // FUNCTION: mtof ---------------------------------------------- //
+  function mtof(midinote) {
+    var freq;
+    freq = Math.pow(2, ((midinote - 69) / 12)) * 440;
+    return freq;
+  }
+  // FUNCTION: ftom ---------------------------------------------- //
+  function ftom(freq) {
+    var midi;
+    midi = (Math.log2((freq / 440)) * 12) + 69;
+    return midi;
+  }
+  // FUNCTION: rrand ---------------------------------------------- //
+  function rrand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  // FUNCTION: rrandInt ---------------------------------------------- //
+  function rrandInt(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+  // FUNCTION: rrand ---------------------------------------------- //
+  function choose(set) {
+    var randpick = Math.floor(Math.random(set.length));
+    return set[randpick];
+  }
+  // FUNCTION: scale ---------------------------------------------- //
+  const scale = (num, in_min, in_max, out_min, out_max) => {
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+  // FUNCTION: norm ---------------------------------------------- //
+  const norm = (num, in_min, in_max) => {
+    return (num - in_min) * (1.0 - 0.0) / (in_max - in_min);
+  }
+</script>
+
+</html>
