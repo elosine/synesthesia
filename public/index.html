@@ -9,6 +9,18 @@
 <style>
   * {
     font-family: 'Lato';
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  #btmRightDiv {
+    background-color: rgb(153, 255, 0);
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    height: 200px;
+    width: 200px;
   }
 
   #svgcanvas {
@@ -20,129 +32,111 @@
     width: calc(100% - 30px); */
     height: 100%;
     width: 100%;
-    margin: 0;
     z-index: -1;
   }
-
-  #newOscB {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  width: 500;
-}
-
 </style>
 
 <body onload='setup();'>
-  <button id='onbutton'>
-    <svg id="svgcanvas" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Filter: neongreen -->
-        <filter id="neongreen" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
-          <!-- blur the text at different levels-->
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
-          <!-- merge all the blurs except for the first one -->
-          <feMerge result="blur-merged">
-            <feMergeNode in="blur10" />
-            <feMergeNode in="blur20" />
-            <feMergeNode in="blur30" />
-            <feMergeNode in="blur50" />
-            <!-- <feMergeNode in="blur60" /> -->
-            <!-- <feMergeNode in="blur70" /> -->
-          </feMerge>
-          <!-- recolour the merged blurs red-->
-          <feColorMatrix result="limegreen-blur" in="blur-merged" type="matrix" values="
+  <div id=btmRightDiv></div>
+  <svg id="svgcanvas" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Filter: neongreen -->
+      <filter id="neongreen" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" /> -->
+          <!-- <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="limegreen-blur" in="blur-merged" type="matrix" values="
                                0.6 0 0 0 0
                                0 1 0 0 0
                                0 0 0 0 0
                                0 0 0 1 0" />
-          <feMerge>
-            <feMergeNode in="limegreen-blur" /> <!-- largest blurs coloured red -->
-            <feMergeNode in="blur5" /> <!-- smallest blur left white -->
-            <feMergeNode in="SourceGraphic" /> <!-- original white text -->
-          </feMerge>
-        </filter>
+        <feMerge>
+          <feMergeNode in="limegreen-blur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
 
-        <!-- Filter: neonyellow -->
-        <filter id="neonyellow" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
-          <!-- blur the text at different levels-->
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
-          <!-- merge all the blurs except for the first one -->
-          <feMerge result="blur-merged">
-            <feMergeNode in="blur10" />
-            <feMergeNode in="blur20" />
-            <feMergeNode in="blur30" />
-            <feMergeNode in="blur50" />
-            <feMergeNode in="blur60" />
-            <feMergeNode in="blur70" />
-          </feMerge>
-          <!-- recolour the merged blurs red-->
-          <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+      <!-- Filter: neonyellow -->
+      <filter id="neonyellow" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" />
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
                                  0.95 0 0 0 0
                                  0 0.95 0 0 0
                                  0 0 0.08 0 0
                                  0 0 0 1 0" />
-          <feMerge>
-            <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
-            <feMergeNode in="blur5" /> <!-- smallest blur left white -->
-            <feMergeNode in="SourceGraphic" /> <!-- original white text -->
-          </feMerge>
-        </filter>
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
 
-        <!-- Filter: neonblue -->
-        <filter id="neonblue" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
-          <!-- blur the text at different levels-->
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
-          <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
-          <!-- merge all the blurs except for the first one -->
-          <feMerge result="blur-merged">
-            <feMergeNode in="blur10" />
-            <feMergeNode in="blur20" />
-            <feMergeNode in="blur30" />
-            <feMergeNode in="blur50" />
-            <feMergeNode in="blur60" />
-            <feMergeNode in="blur70" />
-          </feMerge>
-          <!-- recolour the merged blurs red-->
-          <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+      <!-- Filter: neonblue -->
+      <filter id="neonblue" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" />
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
                                  0 0 0 0 0
                                  0 0.98 0 0 0
                                  0 0 1 0 0
                                  0 0 0 1 0" />
-          <feMerge>
-            <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
-            <feMergeNode in="blur5" /> <!-- smallest blur left white -->
-            <feMergeNode in="SourceGraphic" /> <!-- original white text -->
-          </feMerge>
-        </filter>
-      </defs>
-    </svg>
-  </button>
-  <button id='newOscB'></button>
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
 </body>
 
 <script>
@@ -188,14 +182,44 @@
   var audioCtx;
   var gainNodes = [];
   var played = false;
+  var startButton;
   // SET UP ----------------------------------------------------------- //
   function setup() {
-    // linesSet = mkLines(numLines);
-    var startButton = document.getElementById("onbutton");
-    startButton.addEventListener("click", play);
+    // Make a start button of the entire screen
+    mkStartBtn();
+    // Resize Window Action
     window.addEventListener('resize', winResize, false);
   }
-  //FUNCTION mkPitchPole ------------------------------------------------------ //
+  //FUNCTION mkStartBtn -------------------------------------------------- //
+  function mkStartBtn() {
+    startButton = document.createElement('button');
+    startButton.style.backgroundColor = "transparent";
+    // startButton.style.backgroundColor = "blue";
+    startButton.style.positon = "absolute";
+    startButton.style.width = '99vw';
+    startButton.style.height = "99vh";
+    startButton.style.top = "0px";
+    startButton.style.left = "0px";
+    startButton.addEventListener("click", play);
+    document.body.appendChild(startButton);
+  }
+  //FUNCTION mkAddPPbtn -------------------------------------------------- //
+  function mkAddPPbtn() {
+    var addPPbtn = document.createElement('div');
+    addPPbtn.style.backgroundColor = "rgb(153,255,0)";
+    addPPbtn.style.width = "200px";
+    addPPbtn.style.height = "200px";
+    addPPbtn.style.outline = "none";
+    addPPbtn.style.positon = "absolute";
+    addPPbtn.style.top = "100px";
+    addPPbtn.addEventListener("click", test);
+    document.body.appendChild(addPPbtn);
+  }
+
+  function test() {
+    console.log("slslsllssllsdkkddkdkdkioweruiorewiuoerw");
+  }
+  //FUNCTION mkPitchPole -------------------------------------------------- //
   function mkPitchPole() {
     // Make Gain Node ///////////////////////////////////
     var tempGainNode = audioCtx.createGain();
@@ -222,15 +246,13 @@
   function play() {
     if (!played) {
       played = true;
-      initAudio();
-      mkPitchPole();
-      envOn(pitchPoles[0][1].gain, 6, 0.2);
-      mkOscillator();
-      // envOn(oscillators[0][1].gain, 6, 0.2);
-      //Make Buttons
-      var newOscButton = document.getElementById("newOscB");
-      newOscButton.addEventListener("click", mkOscillator);
-      requestAnimationFrame(animationEngine);
+      startButton.parentNode.removeChild(startButton);
+      mkAddPPbtn();
+      // initAudio();
+      // mkPitchPole();
+      // envOn(pitchPoles[0][1].gain, 6, 0.2);
+      // mkOscillator();
+      // requestAnimationFrame(animationEngine);
     }
   }
   //FUNCTION mkOscillators ------------------------------------------------- //
@@ -353,7 +375,7 @@
   }
   //FUNCTION envOn ------------------------------------------------------ //
   function envOn(vcaGain, attackTime, attackAmp) {
-    var tblsz = 44100 * attackTime;
+    var tblsz = 3000 * attackTime;
     var amptable = [];
     var attackAmpdb = linamp2db(attackAmp);
     var inc = Math.abs((-80 - attackAmpdb) / tblsz);
