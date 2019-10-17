@@ -14,11 +14,11 @@
     border: none;
   }
 
-  #btmRightDiv {
-    background-color: rgb(153, 255, 0);
+  #blDiv {
+    background-color: transparent;
     position: absolute;
     bottom: 0px;
-    right: 0px;
+    left: 0px;
     height: 200px;
     width: 200px;
   }
@@ -28,8 +28,6 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    /* height: calc(100% - 30px);
-    width: calc(100% - 30px); */
     height: 100%;
     width: 100%;
     z-index: -1;
@@ -37,7 +35,6 @@
 </style>
 
 <body onload='setup();'>
-  <div id=btmRightDiv></div>
   <svg id="svgcanvas" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- Filter: neongreen -->
@@ -61,9 +58,9 @@
         </feMerge>
         <!-- recolour the merged blurs red-->
         <feColorMatrix result="limegreen-blur" in="blur-merged" type="matrix" values="
-                               0.6 0 0 0 0
+                               0.22 0 0 0 0
                                0 1 0 0 0
-                               0 0 0 0 0
+                               0 0 0.08 0 0
                                0 0 0 1 0" />
         <feMerge>
           <feMergeNode in="limegreen-blur" /> <!-- largest blurs coloured red -->
@@ -88,14 +85,174 @@
           <feMergeNode in="blur20" />
           <feMergeNode in="blur30" />
           <feMergeNode in="blur50" />
-          <feMergeNode in="blur60" />
-          <feMergeNode in="blur70" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
         </feMerge>
         <!-- recolour the merged blurs red-->
         <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
                                  0.95 0 0 0 0
                                  0 0.95 0 0 0
                                  0 0 0.08 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonorange -->
+      <filter id="neonorange" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 1 0 0 0 0
+                                 0 0.4 0 0 0
+                                 0 0 0 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: red -->
+      <filter id="red" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 1 0 0 0 0
+                                 0 0 0 0 0
+                                 0 0 0 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonred -->
+      <filter id="neonred" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 1 0 0 0 0
+                                 0 0.03 0 0 0
+                                 0 0 0.23 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonpink -->
+      <filter id="neonpink" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 1 0 0 0 0
+                                 0 0 0 0 0
+                                 0 0 0.6 0 0
+                                 0 0 0 1 0" />
+        <feMerge>
+          <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
+          <feMergeNode in="blur5" /> <!-- smallest blur left white -->
+          <feMergeNode in="SourceGraphic" /> <!-- original white text -->
+        </feMerge>
+      </filter>
+
+      <!-- Filter: neonturquoise -->
+      <filter id="neonturquoise" filterUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- blur the text at different levels-->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="blur60" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="blur70" />
+        <!-- merge all the blurs except for the first one -->
+        <feMerge result="blur-merged">
+          <feMergeNode in="blur10" />
+          <feMergeNode in="blur20" />
+          <feMergeNode in="blur30" />
+          <feMergeNode in="blur50" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
+        </feMerge>
+        <!-- recolour the merged blurs red-->
+        <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
+                                 0.08 0 0 0 0
+                                 0 0.96 0 0 0
+                                 0 0 0.93 0 0
                                  0 0 0 1 0" />
         <feMerge>
           <feMergeNode in="coloredblur" /> <!-- largest blurs coloured red -->
@@ -120,8 +277,8 @@
           <feMergeNode in="blur20" />
           <feMergeNode in="blur30" />
           <feMergeNode in="blur50" />
-          <feMergeNode in="blur60" />
-          <feMergeNode in="blur70" />
+          <!-- <feMergeNode in="blur60" />
+          <feMergeNode in="blur70" /> -->
         </feMerge>
         <!-- recolour the merged blurs red-->
         <feColorMatrix result="coloredblur" in="blur-merged" type="matrix" values="
@@ -169,8 +326,24 @@
   var minSpd = 0.45;
   var spdChgGate = true;
   // AUDIO /////////////////////////////////////////////////
-  var CENTERPITCHMIDIOG = [55, 62, 69, 76, 83];
-  var CENTERPITCHMIDI = shuffle(CENTERPITCHMIDIOG);
+  var CENTERPITCHMIDIOG = [41, 48, 55, 62, 69, 76, 83];
+  var shufNumsOG = [];
+  var CENTERPITCHMIDI = [];
+  var filterClrs = [];
+  for (var i = 0; i < CENTERPITCHMIDIOG.length; i++) {
+    shufNumsOG.push(i);
+  }
+  var shufNums = shuffle(shufNumsOG);
+  for (var i = 0; i < shufNums.length; i++) {
+    CENTERPITCHMIDI.push(CENTERPITCHMIDIOG[shufNums[i]]);
+  }
+  var filterClrsOG = ['url(#neongreen)', 'url(#neonred)', 'url(#neonblue)', 'url(#neonorange)',
+    'url(#neonyellow)', 'url(#neonpink)', 'url(#neonturquoise)'
+  ];
+  for (var i = 0; i < shufNums.length; i++) {
+    filterClrs.push(filterClrsOG[shufNums[i]]);
+  }
+
   var CENTERPITCHFREQS = [];
   for (var i = 0; i < CENTERPITCHMIDI.length; i++) {
     var tempfreq = mtof(CENTERPITCHMIDI[i]);
@@ -183,6 +356,10 @@
   var gainNodes = [];
   var played = false;
   var startButton;
+  var boscIx = 0;
+  var boscLineIx = 0;
+  var ppOscLineIx = 0;
+  var ppOscIx = 0;
   // SET UP ----------------------------------------------------------- //
   function setup() {
     // Make a start button of the entire screen
@@ -205,15 +382,51 @@
   }
   //FUNCTION mkAddPPbtn -------------------------------------------------- //
   function mkAddPPbtn() {
-    var addPPbtn = document.createElement('div');
-    addPPbtn.style.backgroundColor = "rgb(153,255,0)";
-    addPPbtn.style.width = "200px";
-    addPPbtn.style.height = "200px";
+    var ppDiv = document.createElement('div');
+    ppDiv.id = "ppdiv";
+    ppDiv.style.backgroundColor = "transparent";
+    ppDiv.style.position = "absolute";
+    ppDiv.style.bottom = "0px";
+    ppDiv.style.left = "0px";
+    ppDiv.style.height = "200px";
+    ppDiv.style.width = "200px";
+    document.body.appendChild(ppDiv);
+
+    var addPPbtn = document.createElement('button');
+    addPPbtn.style.backgroundColor = "transparent";
+    addPPbtn.style.width = "100%";
+    addPPbtn.style.height = "100%";
     addPPbtn.style.outline = "none";
     addPPbtn.style.positon = "absolute";
-    addPPbtn.style.top = "100px";
-    addPPbtn.addEventListener("click", test);
-    document.body.appendChild(addPPbtn);
+    addPPbtn.style.top = "0px";
+    addPPbtn.style.left = "0px";
+    addPPbtn.addEventListener("click", mkPitchPole);
+    var blDiv = document.getElementById('ppdiv')
+    blDiv.appendChild(addPPbtn);
+  }
+  //FUNCTION mkAddOscBtn -------------------------------------------------- //
+  function mkAddOscBtn() {
+    var obDiv = document.createElement('div');
+    obDiv.id = "obdiv";
+    obDiv.style.backgroundColor = "transparent";
+    obDiv.style.position = "absolute";
+    obDiv.style.bottom = "0px";
+    obDiv.style.right = "0px";
+    obDiv.style.height = "200px";
+    obDiv.style.width = "200px";
+    document.body.appendChild(obDiv);
+
+    var addOscBtn = document.createElement('button');
+    addOscBtn.style.backgroundColor = "transparent";
+    addOscBtn.style.width = "100%";
+    addOscBtn.style.height = "100%";
+    addOscBtn.style.outline = "none";
+    addOscBtn.style.positon = "absolute";
+    addOscBtn.style.top = "0px";
+    addOscBtn.style.left = "0px";
+    addOscBtn.addEventListener("click", mkOscillatorLine);
+    var brDiv = document.getElementById('obdiv')
+    brDiv.appendChild(addOscBtn);
   }
 
   function test() {
@@ -230,14 +443,36 @@
     tempOsc.type = 'sine';
     var tempFreq = CENTERPITCHFREQS[pitchPolePitchIx];
     var tempMidi = CENTERPITCHMIDI[pitchPolePitchIx];
+    var tClr = filterClrs[pitchPolePitchIx];
+    console.log(tClr);
     tempOsc.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
     pitchPolePitchIx = (pitchPolePitchIx + 1) % CENTERPITCHFREQS.length;
     tempOsc.connect(tempGainNode);
     tempOsc.start();
-    var tempLine = mkLine();
-    var ppGr = [tempLine, tempGainNode, tempOsc, tempFreq, tempMidi];
+    var tempLine = mkLine(tClr);
+    var tNewGain = -24 + -90 + equalLoudnessCalc(tempFreq, 90);
+    tNewGain = db2linamp(tNewGain);
+    envAtk0(tempGainNode.gain, 6, tNewGain);
+    //Make oscillator without line for every new pitchpole
+    var tNewOscs = [];
+    for (var i = 0; i < oscillators.length; i++) {
+      var tempGainNode2 = audioCtx.createGain();
+      tempGainNode2.gain.setValueAtTime(0, audioCtx.currentTime);
+      tempGainNode2.connect(audioCtx.destination);
+      var tempOsc2 = audioCtx.createOscillator();
+      tempOsc2.type = 'sine';
+      tempOsc2.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
+      tempOsc2.connect(tempGainNode2);
+      tempOsc2.start();
+      envAtk0(tempGainNode2.gain, 6, tNewGain);
+      var oscGr = [oscillators[i][0], tempGainNode2, tempOsc2, tNewGain];
+      oscillators.push(oscGr);
+      tNewOscs.push(oscGr);
+    }
+    var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs];
     pitchPoles.push(ppGr);
   }
+  console.log(linamp2db(0.1));
   //FUNCTION initAudio ------------------------------------------------------ //
   function initAudio() {
     audioCtx = new(window.AudioContext || window.webkitAudioContext)();
@@ -248,16 +483,15 @@
       played = true;
       startButton.parentNode.removeChild(startButton);
       mkAddPPbtn();
-      // initAudio();
-      // mkPitchPole();
-      // envOn(pitchPoles[0][1].gain, 6, 0.2);
-      // mkOscillator();
-      // requestAnimationFrame(animationEngine);
+      mkAddOscBtn();
+      initAudio();
+      // envAtk0(pitchPoles[0][1].gain, 6, 0.2);
+      requestAnimationFrame(animationEngine);
     }
   }
-  //FUNCTION mkOscillators ------------------------------------------------- //
-  function mkOscillator() {
-    var tempLine = mkLine();
+  //FUNCTION mkOscillatorLine ------------------------------------------------- //
+  function mkOscillatorLine() {
+    var tempLine = mkLine(filterClrs[2]);
     for (var i = 0; i < pitchPoles.length; i++) {
       // Make Gain Node ///////////////////////////////////
       var tempGainNode = audioCtx.createGain();
@@ -269,21 +503,23 @@
       tempOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
       tempOsc.connect(tempGainNode);
       tempOsc.start();
-      envOn(tempGainNode.gain, 6, 0.2);
-      var oscGr = [tempLine, tempGainNode, tempOsc];
+      var tGain = pitchPoles[i][2];
+      envAtk0(tempGainNode.gain, 6, tGain);
+      var oscGr = [tempLine, tempGainNode, tempOsc, tGain];
       oscillators.push(oscGr);
+      pitchPoles[i][6].push(oscGr);
     }
   }
   // FUNCTION mkLines ------------------------------------------------- //
-  function mkLine() {
+  function mkLine(filterclr) {
     var templine = document.createElementNS(svgNS, 'line');
     templine.setAttributeNS(null, 'x1', 1);
     templine.setAttributeNS(null, 'x2', 1);
     templine.setAttributeNS(null, 'y1', 3);
     templine.setAttributeNS(null, 'y2', canvasH - 4);
-    templine.setAttributeNS(null, 'stroke', 'rgb(255,255,255)');
+    templine.setAttributeNS(null, 'stroke', 'rgb(255, 255, 255)');
     templine.setAttributeNS(null, 'stroke-width', 7);
-    templine.setAttributeNS(null, 'filter', 'url(#neongreen)'); //make a switch
+    templine.setAttributeNS(null, 'filter', filterclr); //make a switch
     templine.setAttributeNS(null, 'stroke-linecap', 'round');
     svgcanvas.appendChild(templine);
     var tempSpd = rrand(minSpd, maxSpd);
@@ -306,6 +542,12 @@
   }
   // UPDATE ---------------------------------------------------------- //
   function update(MSPERFRAME) {
+    // if ((framect % 200) == 0) {
+    //   console.log("-----------------------");
+    //   for (var i = 0; i < pitchPoles.length; i++) {
+    //     console.log(i + ": " + pitchPoles[i][1].gain.value);
+    //   }
+    // }
     // Clocks ////////////////////////////////////////////////
     framect++;
     pieceClock += MSPERFRAME;
@@ -353,13 +595,13 @@
     }
     // OSCILLATORS ////////////////////////////////////////////
     // var tempLineGroup = [templine, tempSpd, tempAccel, 1, frameOn, frameOff];
-    // var ppGr = [[templine, tempSpd, tempAccel, 1, frameOn, frameOff], tempGainNode, tempOsc, tempFreq, tempMidi];
-    // var oscGr = [[templine, tempSpd, tempAccel, 1, frameOn, frameOff], tempGainNode, tempOsc];
+    // var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs] ;
+    // var oscGr = [tempLine, tempGainNode, tempOsc, tGain];
     for (var i = 0; i < pitchPoles.length; i++) {
       for (var j = 0; j < oscillators.length; j++) {
         var tPPx = parseFloat(pitchPoles[i][0][0].getAttributeNS(null, "x1"));
         var tOscX = parseFloat(oscillators[j][0][0].getAttributeNS(null, 'x1'));
-        var tPPmidi = pitchPoles[i][4];
+        var tPPmidi = pitchPoles[i][5];
         var tDist = tPPx - tOscX;
         var tDiffMidi = scale(tDist, 0, canvasW, 0, 1);
         if (tPPx >= tOscX) {
@@ -373,9 +615,9 @@
     }
 
   }
-  //FUNCTION envOn ------------------------------------------------------ //
-  function envOn(vcaGain, attackTime, attackAmp) {
-    var tblsz = 3000 * attackTime;
+  //FUNCTION envAtk0 ------------------------------------------------------ //
+  function envAtk0(vcaGain, attackDur, attackAmp) {
+    var tblsz = 3000 * attackDur;
     var amptable = [];
     var attackAmpdb = linamp2db(attackAmp);
     var inc = Math.abs((-80 - attackAmpdb) / tblsz);
@@ -386,8 +628,35 @@
     var now = audioCtx.currentTime;
     vcaGain.cancelScheduledValues(0);
     vcaGain.setValueAtTime(0, now);
-    vcaGain.setValueCurveAtTime(amptable, now, attackTime);
-    // vcaGain.linearRampToValueAtTime(attackAmp, attackTime);
+    vcaGain.setValueCurveAtTime(amptable, now, attackDur);
+    // vcaGain.linearRampToValueAtTime(attackAmp, attackDur);
+  }
+  //FUNCTION envAtk1 ------------------------------------------------------ //
+  function envAtk1(vcaGain, attackStartTime, attackDur, attackAmp) {
+    var tblsz = 3000 * attackDur;
+    var amptable = [];
+    var attackAmpdb = linamp2db(attackAmp);
+    var iAmpDb;
+    if (vcaGain.value != 0) {
+      iAmpDb = linamp2db(vcaGain.value);
+    } else {
+      iAmpDb = -80;
+    }
+    console.log(iAmpDb);
+    var inc;
+    if (attackAmpdb > iAmpDb) {
+      inc = Math.abs(Math.abs(attackAmpdb) - Math.abs(iAmpDb)) / tblsz;
+    } else if (iAmpDb > attackAmpdb) {
+      inc = -1 * (Math.abs(Math.abs(iAmpDb) - Math.abs(attackAmpdb)) / tblsz);
+    }
+    for (var i = 0; i < tblsz; i++) {
+      var tempamp = db2linamp(iAmpDb + (inc * i));
+      amptable.push(tempamp);
+    }
+    var tStartTime = audioCtx.currentTime + attackStartTime;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueCurveAtTime(amptable, tStartTime, attackDur);
+    // vcaGain.linearRampToValueAtTime(attackAmp, attackDur);
   }
   //FUNCTION envOff ------------------------------------------------------ //
   function envOff(vcaGain, releaseTime) {
@@ -454,6 +723,55 @@
   function linamp2db(linamp) {
     var db = 20 * Math.log(linamp);
     return db;
+  }
+  // FUNCTION: dbA ---------------------------------------------- //
+  function equalLoudnessCalc(freq, phon) {
+    var spl0, spl1, ix0, ix1, tAf0, tAf1;
+    var f = [20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800,
+      1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500
+    ];
+
+    var af = [0.532, 0.506, 0.480, 0.455, 0.432, 0.409, 0.387, 0.367, 0.349, 0.330, 0.315,
+      0.301, 0.288, 0.276, 0.267, 0.259, 0.253, 0.250, 0.246, 0.244, 0.243, 0.243,
+      0.243, 0.242, 0.242, 0.245, 0.254, 0.271, 0.301
+    ];
+
+    var Lu = [-31.6, -27.2, -23.0, -19.1, -15.9, -13.0, -10.3, -8.1, -6.2, -4.5, -3.1,
+      -2.0, -1.1, -0.4, 0.0, 0.3, 0.5, 0.0, -2.7, -4.1, -1.0, 1.7,
+      2.5, 1.2, -2.1, -7.1, -11.2, -10.7, -3.1
+    ];
+
+    var Tf = [78.5, 68.7, 59.5, 51.1, 44.0, 37.5, 31.5, 26.5, 22.1, 17.9, 14.4,
+      11.4, 8.6, 6.2, 4.4, 3.0, 2.2, 2.4, 3.5, 1.7, -1.3, -4.2,
+      -6.0, -5.4, -1.5, 6.0, 12.6, 13.9, 12.3
+    ];
+
+    if ((phon < 0) || (phon > 90)) {
+      spl = 0;
+    } else {
+      //find nearest frequencies in table
+      for (var i = 0; i < f.length; i++) {
+        if (freq < f[i]) {
+          ix0 = i - 1;
+          ix1 = i;
+          break;
+        }
+      }
+      //Deriving sound pressure level from loudness level (iso226 sect 4.1)
+      tAf0 = (0.00447 * (Math.pow(10, (0.025 * phon)) - 1.15)) +
+        Math.pow((0.4 * Math.pow(10, (((Tf[ix0] + Lu[ix0]) / 10) - 9))), af[ix0]);
+      tAf1 = (0.00447 * (Math.pow(10, (0.025 * phon)) - 1.15)) +
+        Math.pow((0.4 * Math.pow(10, (((Tf[ix1] + Lu[ix1]) / 10) - 9))), af[ix1]);
+      spl0 = ((10 / af[ix0]) * Math.log10(tAf0)) - Lu[ix0] + 94;
+      spl1 = ((10 / af[ix1]) * Math.log10(tAf1)) - Lu[ix1] + 94;
+      // Return user data
+      // spl = Lp;
+      // freq = f;
+    }
+    spl = scale(ftom(freq), ftom(f[ix0]), ftom(f[ix1]), spl0, spl1);
+    return spl;
+
+
   }
 </script>
 
