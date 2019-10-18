@@ -350,15 +350,11 @@
     neonturquoise = 'rgb(21, 244, 238)',
     neonblue = 'rgb(6, 107, 225)',
     white = 'rgb(255,255,255)';
-    // SVG ///////////////////////////////////////////////////
-    var svgcanvas = document.getElementById('svgcanvas');
-    var svgNS = "http://www.w3.org/2000/svg";
-    var canvasW = window.innerWidth;
-    var canvasH = window.innerHeight;
-  // BLENDING ////////////////////////////////////////////////
-  var blendgroup = document.createElementNS(svgNS, 'g');
-  blendgroup.setAttribute('style', "isolation: isolate");
-  svgcanvas.appendChild(blendgroup);
+  // SVG ///////////////////////////////////////////////////
+  var svgcanvas = document.getElementById('svgcanvas');
+  var svgNS = "http://www.w3.org/2000/svg";
+  var canvasW = window.innerWidth;
+  var canvasH = window.innerHeight;
   // LINES /////////////////////////////////////////////////
   var ppLinesSet = [];
   var oscLinesSet = [];
@@ -566,9 +562,7 @@
     templine.setAttributeNS(null, 'stroke-width', 7);
     templine.setAttributeNS(null, 'filter', filterclr);
     templine.setAttributeNS(null, 'stroke-linecap', 'round');
-    // templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
-    templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
-    blendgroup.appendChild(templine);
+    svgcanvas.appendChild(templine);
     var tempSpd = rrand(minSpd, maxSpd);
     var tempAccel = rrand(accelMin, accelMax);
     var tempLineGroup = [templine, tempSpd, tempAccel, 1, ix];
@@ -586,9 +580,7 @@
     templine.setAttributeNS(null, 'stroke-width', 7);
     templine.setAttributeNS(null, 'filter', filterclr);
     templine.setAttributeNS(null, 'stroke-linecap', 'round');
-    // templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
-    templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
-    blendgroup.appendChild(templine);
+    svgcanvas.appendChild(templine);
     var tempSpd = rrand(minSpd, maxSpd);
     var tempAccel = rrand(accelMin, accelMax);
     var tempLineGroup = [templine, tempSpd, tempAccel, 1, ix];
