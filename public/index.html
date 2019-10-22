@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Fidgets - Vertical Lines</title>
+  <title>Those cracks should be flowers</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 </head>
 <style>
@@ -328,7 +328,7 @@
 
 <script>
   // GLOBAL VARIABLES ---------------------------------------------- //
-  //TIMING & ANIMATION ENGINE //////////////////////////////
+  //TIMING & ANIMATION ENGINE ////////////////////////////////
   var FRAMERATE = 60.0;
   var MSPERFRAME = 1000.0 / FRAMERATE;
   var SECPERFRAME = 1.0 / FRAMERATE;
@@ -350,11 +350,11 @@
     neonturquoise = 'rgb(21, 244, 238)',
     neonblue = 'rgb(6, 107, 225)',
     white = 'rgb(255,255,255)';
-    // SVG ///////////////////////////////////////////////////
-    var svgcanvas = document.getElementById('svgcanvas');
-    var svgNS = "http://www.w3.org/2000/svg";
-    var canvasW = window.innerWidth;
-    var canvasH = window.innerHeight;
+  // SVG ///////////////////////////////////////////////////
+  var svgcanvas = document.getElementById('svgcanvas');
+  var svgNS = "http://www.w3.org/2000/svg";
+  var canvasW = window.innerWidth;
+  var canvasH = window.innerHeight;
   // BLENDING ////////////////////////////////////////////////
   var blendgroup = document.createElementNS(svgNS, 'g');
   blendgroup.setAttribute('style', "isolation: isolate");
@@ -363,10 +363,10 @@
   var ppLinesSet = [];
   var oscLinesSet = [];
   var numLines = 2;
-  var accelMin = 0.992;
-  var accelMax = 1.008;
-  var maxSpd = 3.3;
-  var minSpd = 0.45;
+  var accelMin = 0.997;
+  var accelMax = 1.001;
+  var maxSpd = 0.9;
+  var minSpd = 0.1;
   var spdChgGate = true;
   // AUDIO /////////////////////////////////////////////////
   var CENTERPITCHMIDIOG = [41, 48, 55, 62, 69, 76, 83];
@@ -401,23 +401,20 @@
   var pitchPolePitchIx = 0;
   var oscillators = [];
   var audioCtx;
-  var gainNodes = [];
   var played = false;
   var startButton;
   var ppLinesIx = 0;
-  var oscLinesIx = 0;
+  var oscLinesIx = 1000;
+  var MINGAIN = -18;
   // SET UP ----------------------------------------------------------- //
   function setup() {
-    // Make a start button of the entire screen
     mkStartBtn();
-    // Resize Window Action
     window.addEventListener('resize', winResize, false);
   }
   //FUNCTION mkStartBtn -------------------------------------------------- //
   function mkStartBtn() {
     startButton = document.createElement('button');
     startButton.style.backgroundColor = "transparent";
-    // startButton.style.backgroundColor = "blue";
     startButton.style.positon = "absolute";
     startButton.style.width = '99vw';
     startButton.style.height = "99vh";
@@ -447,6 +444,52 @@
     addPPbtn.style.left = "0px";
     addPPbtn.addEventListener("click", mkPitchPole);
     var blDiv = document.getElementById('ppdiv')
+    blDiv.appendChild(addPPbtn);
+  }
+  //FUNCTION mkRmvPPbtn -------------------------------------------------- //
+  function mkRmvPPbtn() {
+    var ppDiv = document.createElement('div');
+    ppDiv.id = "rmvppdiv";
+    ppDiv.style.backgroundColor = "transparent";
+    ppDiv.style.position = "absolute";
+    ppDiv.style.top = "0px";
+    ppDiv.style.left = "0px";
+    ppDiv.style.height = "200px";
+    ppDiv.style.width = "200px";
+    document.body.appendChild(ppDiv);
+    var addPPbtn = document.createElement('button');
+    addPPbtn.style.backgroundColor = "transparent";
+    addPPbtn.style.width = "100%";
+    addPPbtn.style.height = "100%";
+    addPPbtn.style.outline = "none";
+    addPPbtn.style.positon = "absolute";
+    addPPbtn.style.top = "0px";
+    addPPbtn.style.left = "0px";
+    addPPbtn.addEventListener("click", rmvPP);
+    var blDiv = document.getElementById('rmvppdiv')
+    blDiv.appendChild(addPPbtn);
+  }
+  //FUNCTION mkRmvBOscBtn -------------------------------------------------- //
+  function mkRmvBOscBtn() {
+    var ppDiv = document.createElement('div');
+    ppDiv.id = "rmvboscdiv";
+    ppDiv.style.backgroundColor = "transparent";
+    ppDiv.style.position = "absolute";
+    ppDiv.style.top = "0px";
+    ppDiv.style.right = "0px";
+    ppDiv.style.height = "200px";
+    ppDiv.style.width = "200px";
+    document.body.appendChild(ppDiv);
+    var addPPbtn = document.createElement('button');
+    addPPbtn.style.backgroundColor = "transparent";
+    addPPbtn.style.width = "100%";
+    addPPbtn.style.height = "100%";
+    addPPbtn.style.outline = "none";
+    addPPbtn.style.positon = "absolute";
+    addPPbtn.style.top = "0px";
+    addPPbtn.style.left = "0px";
+    addPPbtn.addEventListener("click", rmvBOsc);
+    var blDiv = document.getElementById('rmvboscdiv')
     blDiv.appendChild(addPPbtn);
   }
   //FUNCTION mkAddOscBtn -------------------------------------------------- //
@@ -492,7 +535,7 @@
     var tempLine = mkPPLine(tClr, tppclr, ppLinesIx);
     var tppLineix = ppLinesIx;
     ppLinesIx++;
-    var tNewGain = -24 + -90 + equalLoudnessCalc(tempFreq, 90);
+    var tNewGain = MINGAIN + -90 + equalLoudnessCalc(tempFreq, 90);
     tNewGain = db2linamp(tNewGain);
     envAtk0(tempGainNode.gain, 6, tNewGain);
     //Make oscillator without line for every new pitchpole
@@ -507,9 +550,6 @@
       tempOsc2.connect(tempGainNode2);
       tempOsc2.start();
       envAtk0(tempGainNode2.gain, 6, tNewGain);
-      // var tempLineGroup = [templine, tempSpd, tempAccel, 1, ix];
-      // var oscGr = [tempLine, tempGainNode, tempOsc, tGain, linesIx];
-      // var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs, linesIx];
       var oscGr = [oscLinesSet[i], tempGainNode2, tempOsc2, tNewGain, oscLinesSet[i][4]];
       oscillators.push(oscGr);
       tNewOscs.push(oscGr);
@@ -528,6 +568,8 @@
       startButton.parentNode.removeChild(startButton);
       mkAddPPbtn();
       mkAddOscBtn();
+      mkRmvPPbtn();
+      mkRmvBOscBtn()
       initAudio();
       requestAnimationFrame(animationEngine);
     }
@@ -558,6 +600,7 @@
   // FUNCTION mkPPLine ------------------------------------------------- //
   function mkPPLine(filterclr, lineclr, ix) {
     var templine = document.createElementNS(svgNS, 'line');
+    templine.setAttributeNS(null, 'id', 'ppline' + ix);
     templine.setAttributeNS(null, 'x1', 1);
     templine.setAttributeNS(null, 'x2', 1);
     templine.setAttributeNS(null, 'y1', 3);
@@ -566,7 +609,6 @@
     templine.setAttributeNS(null, 'stroke-width', 7);
     templine.setAttributeNS(null, 'filter', filterclr);
     templine.setAttributeNS(null, 'stroke-linecap', 'round');
-    // templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
     templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
     blendgroup.appendChild(templine);
     var tempSpd = rrand(minSpd, maxSpd);
@@ -578,6 +620,7 @@
   // FUNCTION mkOscLine ------------------------------------------------- //
   function mkOscLine(filterclr, lineclr, ix) {
     var templine = document.createElementNS(svgNS, 'line');
+    templine.setAttributeNS(null, 'id', 'oscline' + ix);
     templine.setAttributeNS(null, 'x1', 1);
     templine.setAttributeNS(null, 'x2', 1);
     templine.setAttributeNS(null, 'y1', 3);
@@ -586,7 +629,6 @@
     templine.setAttributeNS(null, 'stroke-width', 7);
     templine.setAttributeNS(null, 'filter', filterclr);
     templine.setAttributeNS(null, 'stroke-linecap', 'round');
-    // templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
     templine.setAttributeNS(null, 'style', "mix-blend-mode: multiply");
     blendgroup.appendChild(templine);
     var tempSpd = rrand(minSpd, maxSpd);
@@ -604,6 +646,110 @@
       delta -= MSPERFRAME;
     }
     requestAnimationFrame(animationEngine);
+  }
+  // REMOVE BEATING OSCILLATOR ---------------------------------------- //
+  function rmvBOsc() {
+    if (oscLinesSet.length > 0) {
+      var now = audioCtx.currentTime;
+      // Chose random bosc
+      var tnumbosc2rmv = rrandInt(0, oscLinesSet.length);
+      var tbosclinesix = oscLinesSet[tnumbosc2rmv][4];
+      for (var i = 0; i < oscillators.length; i++) {
+        if (oscillators[i][4] == tbosclinesix) {
+          //envelope down gain node
+          var tboscGainToRmv = oscillators[i][1];
+          envOff(tboscGainToRmv.gain, 6);
+          //stop all oscillators
+          var tboscOscToRmv = oscillators[i][2];
+          tboscOscToRmv.stop(now + 6.05);
+        }
+      }
+      // remove from oscillators set
+      //FIGURE OUT WHY THERE IS AN EXTRA OSC IN OSCILLATORS
+      for (var i = 0; i < oscillators.length; i++) {
+        // console.log(i+":"+oscillators[i][4]);
+      }
+      for (var i = 0; i < oscillators.length; i++) {
+        console.log(i+":"+oscillators[i][4]);
+        if (oscillators[i][4] == tbosclinesix) {
+          // console.log(oscillators[i][4] + " " + tbosclinesix);
+          oscillators.splice(i, 1);
+        }
+      }
+      //remove from pitchpoles array
+      for (var i = 0; i < pitchPoles.length; i++) {
+        for (var j = 0; j < pitchPoles[i][6].length; j++) {
+          if (pitchPoles[i][6][j][4] == tbosclinesix) {
+            pitchPoles[i][6].splice(j, 1);
+          }
+        }
+      }
+      //remove line
+      removeElement(oscLinesSet[tnumbosc2rmv][0].id);
+      //remove from oscLinesSet
+      oscLinesSet.splice(tnumbosc2rmv, 1);
+
+    }
+    // console.log(oscillators.length);
+    // var oscillators = [];
+  }
+  // REMOVE PITCH POLE ----------------------------------------------- //
+  function rmvPP() {
+    if (pitchPoles.length > 0) {
+      var now = audioCtx.currentTime;
+      // Chose random pp
+      var tnumpp2rmv = rrandInt(0, pitchPoles.length);
+      //envelope down gain node
+      var tppGainToRmv = pitchPoles[tnumpp2rmv][1];
+      envOff(tppGainToRmv.gain, 6);
+      //stop oscillator & gain node
+      var tppOscToRmv = pitchPoles[tnumpp2rmv][3];
+      var tpplinesix = pitchPoles[tnumpp2rmv][7];
+      for (var i = 0; i < pitchPoles[tnumpp2rmv][6].length; i++) {
+        //envelope down gain node
+        envOff(pitchPoles[tnumpp2rmv][6][i][1].gain, 6);
+        //stop oscillator & gain node
+        var tppOscToRmv = pitchPoles[tnumpp2rmv][3];
+        pitchPoles[tnumpp2rmv][6][i][2].stop(now + 6.05);
+      }
+      //remove pitch pole line
+      removeElement(pitchPoles[tnumpp2rmv][0][0].id);
+      // if only one pp remove oscillator lines
+      if (pitchPoles.length == 1) {
+        for (var i = 0; i < pitchPoles[tnumpp2rmv][6].length; i++) {
+          removeElement(pitchPoles[tnumpp2rmv][6][i][0][0].id);
+          for (var j = 0; j < oscLinesSet.length; j++) {
+            if (oscLinesSet[j][4] == pitchPoles[tnumpp2rmv][6][i][4]) {
+              oscLinesSet.splice(j, 1);
+            }
+          }
+        }
+      }
+      // Remove all elements from arrays
+      for (var i = 0; i < ppLinesSet.length; i++) {
+        if (ppLinesSet[i][4] == tpplinesix) {
+          ppLinesSet.splice(i, 1);
+        }
+      }
+      for (var j = 0; j < oscillators.length; j++) {
+        if (oscillators[j][4] == (pitchPoles[tnumpp2rmv][0][4] + 1000)) {
+          oscillators.splice(j, 1);
+        }
+      }
+
+      pitchPoles.splice(tnumpp2rmv, 1);
+      /*
+      var ppLinesSet = [];
+      var oscLinesSet = [];
+      var pitchPoles = [];
+      var oscillators = [];
+      var ppLinesIx = 0;
+      var oscLinesIx = 0;
+      // var tempLineGroup = [templine, tempSpd, tempAccel, 1, ix];
+      // var oscGr = [tempLine, tempGainNode, tempOsc, tGain, linesIx];
+      // var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs, linesIx];
+      */
+    }
   }
   // UPDATE ---------------------------------------------------------- //
   function update(MSPERFRAME) {
@@ -667,7 +813,7 @@
       } else {
         newDir = oldDir;
       }
-      //// Has Accel/Decel made the line too fast/slow?
+      //// Has Accel/Decel made the line too fast/slow? //////////////
       if (oldSpd > maxSpd || oldSpd < minSpd) {
         newAcc = scale((1 - norm(oldAcc, accelMin, accelMax)), 0.0, 1.0, accelMin, accelMax);
         if (oldSpd >= maxSpd) {
@@ -727,15 +873,12 @@
         } else if (tOscX > tPPx) {
           tNewFreq = mtof(tPPmidi + tDiffMidi);
         }
-        if (framect % 240 == 0) {
-          // console.log("pp " + j + ": " + ftom(tNewFreq));
-        }
+        if (framect % 240 == 0) {}
         tbosc[2].frequency.setValueAtTime(tNewFreq, audioCtx.currentTime);
       }
     }
 
   }
-
   //FUNCTION envAtk0 ------------------------------------------------------ //
   function envAtk0(vcaGain, attackDur, attackAmp) {
     var tblsz = 3000 * attackDur;
@@ -749,8 +892,7 @@
     var now = audioCtx.currentTime;
     vcaGain.cancelScheduledValues(0);
     vcaGain.setValueAtTime(0, now);
-    vcaGain.setValueCurveAtTime(amptable, now, attackDur);
-    // vcaGain.linearRampToValueAtTime(attackAmp, attackDur);
+    vcaGain.setValueCurveAtTime(amptable, now + 0.05, attackDur);
   }
   //FUNCTION envAtk1 ------------------------------------------------------ //
   function envAtk1(vcaGain, attackStartTime, attackDur, attackAmp) {
@@ -776,7 +918,6 @@
     var tStartTime = audioCtx.currentTime + attackStartTime;
     vcaGain.cancelScheduledValues(0);
     vcaGain.setValueCurveAtTime(amptable, tStartTime, attackDur);
-    // vcaGain.linearRampToValueAtTime(attackAmp, attackDur);
   }
   //FUNCTION envOff ------------------------------------------------------ //
   function envOff(vcaGain, releaseTime) {
@@ -887,14 +1028,14 @@
         Math.pow((0.4 * Math.pow(10, (((Tf[ix1] + Lu[ix1]) / 10) - 9))), af[ix1]);
       spl0 = ((10 / af[ix0]) * Math.log10(tAf0)) - Lu[ix0] + 94;
       spl1 = ((10 / af[ix1]) * Math.log10(tAf1)) - Lu[ix1] + 94;
-      // Return user data
-      // spl = Lp;
-      // freq = f;
     }
     spl = scale(ftom(freq), ftom(f[ix0]), ftom(f[ix1]), spl0, spl1);
     return spl;
-
-
+  }
+  // FUNCTION: removeElement ---------------------------------------------- //
+  function removeElement(elementId) {
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
   }
 </script>
 
