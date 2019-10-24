@@ -371,6 +371,7 @@
   var minSpd = 0.1;
   var spdChgGate = true;
   // AUDIO /////////////////////////////////////////////////
+  var iRampTime = 9;
   var CENTERPITCHMIDIOG = [41, 48, 55, 62, 69, 76, 83];
   var shufNumsOG = [];
   var CENTERPITCHMIDI = [];
@@ -407,12 +408,16 @@
   var startButton;
   var ppLinesIx = 0;
   var oscLinesIx = 1000;
-  var MINGAIN = -18;
+  var MINGAIN = -24;
+  var MINGAINLINAMP = db2linamp(MINGAIN);
+  var MINAMP = 0.0001;
   // POLE VERTICAL MOVEMENT /////////////////////////
   var Y1MIN = 3;
   var Y2MAX = canvasH - Y1MIN;
-  var MAXYSPD = 0.3;
-  var MINYSPD = 0.05;
+  var MAXYSPD = 0.7;
+  var MINYSPD = 0.2;
+  var mvLinesVertOn = false;
+  var resetVertLines = false;
   // SET UP ----------------------------------------------------------- //
   function setup() {
     mkStartBtn();
@@ -427,6 +432,8 @@
       mkDivBtn("addBOsc", null, '0px', '0px', null, 100, 100, mkOscillatorLine);
       mkDivBtn("rmvPP", '0px', null, null, '0px', 100, 100, rmvPP);
       mkDivBtn("rmvBOsc", '0px', '0px', null, null, 100, 100, rmvBOsc);
+      mkDivBtn("vertMvtOn", 'calc(50% - 75px)', '0px', null, null, 150, 150, vertMvtOn);
+      mkDivBtn("vertMvtOff", 'calc(50% - 75px)', null, null, '0px', 150, 150, vertMvtOff);
       initAudio();
       requestAnimationFrame(animationEngine);
     }
@@ -440,11 +447,12 @@
     // Lines /////////////////////////////////////////////////
     mvLines(ppLinesSet);
     mvLines(oscLinesSet);
-    mvLinesVert(ppLinesSet)
-    // CHANGE OSCILLATOR FREQUENCY BASED ON LIGHT POLES DISTANCE //////////
-    chgOscFreq()
+    mvLinesVert(ppLinesSet);
+    vertLinesReset(ppLinesSet)
+    chgOscFreq();
+    pan();
   }
-  // ANIMATION ENGINE ----------------------------------------------- //
+  // ANIMATION ENGINE --------------------------------------------------- //
   function animationEngine(timestamp) {
     delta += timestamp - lastFrameTimeMs;
     lastFrameTimeMs = timestamp;
@@ -454,56 +462,121 @@
     }
     requestAnimationFrame(animationEngine);
   }
-
-
-  /*
-  tempLineGroup = [templine, tempSpd, tempAccel, tHdir, ix, tYshrinkPt, tYspd, tMvY, tYMoving, lineID];
-  oscGr = [tempLine, tempGainNode, tempOsc, tGain, linesIx];
-  ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs, linesIx];
-  */
-
-
-  //FUNCTION: mvLinesVert -------------------------------------------------- //
-  var test = true;
-
+  //FUNCTION: mvLinesVert ----------------------------------------------- //
   function mvLinesVert(linesSet) {
-    for (var i = 0; i < linesSet.length; i++) {
-      // Shrink/Grow Lines //////////////////////////////
-      var line2growshrink = linesSet[i][0];
-      var tOldY1 = parseFloat( line2growshrink.getAttributeNS(null, 'y1') );
-      var tOldY2 = parseFloat(line2growshrink.getAttributeNS(null, 'y2'));
-      var tYSpd = linesSet[i][6];
-      var tYshrinkPt = linesSet[i][5];
-      var tY1Dir = linesSet[i][10];
-      var tY2Dir = linesSet[i][11];
-      if (tOldY1 < 0) {
-        tY1Dir = 1;
-      } else if (tOldY1 > tYshrinkPt){
-        tY1Dir = -1;
+    if (mvLinesVertOn) {
+      for (var i = 0; i < linesSet.length; i++) {
+        // Shrink/Grow Lines //////////////////////////////
+        var line2growshrink = linesSet[i][0];
+        var tOldY1 = parseFloat(line2growshrink.getAttributeNS(null, 'y1'));
+        var tOldY2 = parseFloat(line2growshrink.getAttributeNS(null, 'y2'));
+        var tYSpd = linesSet[i][6];
+        var tYshrinkPt = linesSet[i][5];
+        var tY1Dir = linesSet[i][10];
+        var tY2Dir = linesSet[i][11];
+
+        if (tOldY1 < 0) {
+          tY1Dir = 1;
+        } else if (tOldY1 > tYshrinkPt) {
+          tY1Dir = -1;
+        }
+        if (tOldY2 > Y2MAX) {
+          tY2Dir = -1;
+        } else if (tOldY2 < tYshrinkPt) {
+          tY2Dir = 1;
+        }
+        linesSet[i][10] = tY1Dir;
+        linesSet[i][11] = tY2Dir;
+        var tNewY1 = tOldY1 + (tYSpd * tY1Dir);
+        var tNewY2 = tOldY2 + (tYSpd * tY2Dir);
+        line2growshrink.setAttributeNS(null, 'y1', tNewY1);
+        line2growshrink.setAttributeNS(null, 'y2', tNewY2);
+        var tLineLength = Math.abs(tNewY1 - tNewY2);
+        // Pitch Pole Gain /////////////////////////////
+        for (var j = 0; j < pitchPoles.length; j++) {
+          if (pitchPoles[j][7] == linesSet[i][4]) {
+            var tNewPPGain = scale(tLineLength, 0, (canvasH - 6), MINAMP, pitchPoles[j][2]);
+            var tPPGain = pitchPoles[j][1].gain;
+            tPPGain.cancelScheduledValues(0);
+            tPPGain.setValueAtTime(tNewPPGain, audioCtx.currentTime);
+            // Oscillator gains
+            for (var k = 0; k < pitchPoles[j][6].length; k++) {
+              var tBoscGain = pitchPoles[j][6][k][1].gain;
+              tBoscGain.cancelScheduledValues(0);
+              tBoscGain.setValueAtTime(tNewPPGain, audioCtx.currentTime);
+            }
+          }
+        }
       }
-      if (tOldY2 > Y2MAX) {
-        tY2Dir = -1;
-      } else if (tOldY2 < tYshrinkPt){
-        tY2Dir = 1;
-      }
-      linesSet[i][10] = tY1Dir;
-      linesSet[i][11] = tY2Dir;
-      if (test) {
-        // console.log( parseFloat( line2growshrink.getAttributeNS(null, 'y2') ) );
-        test = false;
-      }
-      var tNewY1 = tOldY1 + (tYSpd * tY1Dir);
-      var tNewY2 = tOldY2 + (tYSpd * tY2Dir);
-      // console.log(tNewY1);
-      line2growshrink.setAttributeNS(null, 'y1', tNewY1);
-      line2growshrink.setAttributeNS(null, 'y2', tNewY2);
     }
   }
-  //FUNCTION: initAudio -------------------------------------------------- //
+  //FUNCTION: vertLinesReset ----------------------------------------------- //
+  function vertLinesReset(linesSet) {
+    if (resetVertLines) {
+      for (var i = 0; i < linesSet.length; i++) {
+        // Shrink/Grow Lines //////////////////////////////
+        var line2growshrink = linesSet[i][0];
+        var tOldY1 = parseFloat(line2growshrink.getAttributeNS(null, 'y1'));
+        var tOldY2 = parseFloat(line2growshrink.getAttributeNS(null, 'y2'));
+        var tYSpd = linesSet[i][6];
+        var tYshrinkPt = linesSet[i][5];
+        // var tY1Dir = linesSet[i][10];
+        // var tY2Dir = linesSet[i][11];
+        var tY1Dir = -1;
+        var tY2Dir = 1;;
+        if (tOldY1 < 0) {
+          tY1Dir = 0;
+          tOldY1 = Y1MIN;
+        }
+        if (tOldY2 > Y2MAX) {
+          tY2Dir = 0;
+          tOldY2 = Y2MAX;
+        } 
+        var tNewY1 = tOldY1 + (tYSpd * tY1Dir);
+        var tNewY2 = tOldY2 + (tYSpd * tY2Dir);
+        line2growshrink.setAttributeNS(null, 'y1', tNewY1);
+        line2growshrink.setAttributeNS(null, 'y2', tNewY2);
+        var tLineLength = Math.abs(tNewY1 - tNewY2);
+        // Pitch Pole Gain /////////////////////////////
+        for (var j = 0; j < pitchPoles.length; j++) {
+          if (pitchPoles[j][7] == linesSet[i][4]) {
+            var tNewPPGain = scale(tLineLength, 0, (canvasH - 6), MINAMP, pitchPoles[j][2]);
+            var tPPGain = pitchPoles[j][1].gain;
+            tPPGain.cancelScheduledValues(0);
+            tPPGain.setValueAtTime(tNewPPGain, audioCtx.currentTime);
+            // Oscillator gains
+            for (var k = 0; k < pitchPoles[j][6].length; k++) {
+              var tBoscGain = pitchPoles[j][6][k][1].gain;
+              tBoscGain.cancelScheduledValues(0);
+              tBoscGain.setValueAtTime(tNewPPGain, audioCtx.currentTime);
+            }
+          }
+        }
+      }
+    }
+  }
+  /*
+  tempLineGroup = [templine, tempSpd, tempAccel, tHdir, ix, tYshrinkPt,
+  tYspd, tMvY, tYMoving, lineID, tY1Dir, tY2Dir];
+  oscGr = [tempLine, tempGainNode, tempOsc, tGain, tosclineix, tPanNode];
+  ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi,
+  tNewOscs, tppLineix, tPanNode];
+  */
+  //FUNCTION: vertMvtOn -------------------------------------------------- //
+  function vertMvtOn() {
+    mvLinesVertOn = true;
+    resetVertLines = false;
+  }
+  //FUNCTION: vertMvtOff -------------------------------------------------- //
+  function vertMvtOff() {
+    mvLinesVertOn = false;
+    resetVertLines = true;
+  }
+  //FUNCTION: initAudio ------------------------------------------------- //
   function initAudio() {
     audioCtx = new(window.AudioContext || window.webkitAudioContext)();
   }
-  //FUNCTION mkOscillatorLine -------------------------------------------- //
+  //FUNCTION mkOscillatorLine ------------------------------------------- //
   function mkOscillatorLine() {
     var tosclineix = oscLinesIx;
     oscLinesIx++;
@@ -512,7 +585,9 @@
       // Make Gain Node ///////////////////////////////////
       var tempGainNode = audioCtx.createGain();
       tempGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      tempGainNode.connect(audioCtx.destination);
+      var tPanNode = audioCtx.createStereoPanner();
+      tempGainNode.connect(tPanNode);
+      tPanNode.connect(audioCtx.destination);
       // Make Oscillator ///////////////////////////////////
       var tempOsc = audioCtx.createOscillator();
       tempOsc.type = 'sine';
@@ -520,13 +595,62 @@
       tempOsc.connect(tempGainNode);
       tempOsc.start();
       var tGain = pitchPoles[i][2];
-      envAtk0(tempGainNode.gain, 6, tGain);
-      var oscGr = [tempLine, tempGainNode, tempOsc, tGain, tosclineix];
+      envAtk2(tempGainNode.gain, 0, iRampTime, tGain)
+      // envAtk0(tempGainNode.gain, 6, tGain);
+      var oscGr = [tempLine, tempGainNode, tempOsc, tGain, tosclineix, tPanNode];
       oscillators.push(oscGr);
       pitchPoles[i][6].push(oscGr);
     }
   }
-  // FUNCTION mkLine ----------------------------------------------------- //
+  //FUNCTION mkPitchPole ------------------------------------------------ //
+  function mkPitchPole() {
+    // Make Gain Node ///////////////////////////////////
+    var tempGainNode = audioCtx.createGain();
+    var tPanNode = audioCtx.createStereoPanner();
+    tempGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    tempGainNode.connect(tPanNode);
+    tPanNode.connect(audioCtx.destination);
+    // Make Oscillator ///////////////////////////////////
+    var tempOsc = audioCtx.createOscillator();
+    tempOsc.type = 'sine';
+    var tempFreq = CENTERPITCHFREQS[pitchPolePitchIx];
+    var tempMidi = CENTERPITCHMIDI[pitchPolePitchIx];
+    var tClr = filterClrs[pitchPolePitchIx];
+    var tppclr = ppClrs[pitchPolePitchIx];
+    tempOsc.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
+    pitchPolePitchIx = (pitchPolePitchIx + 1) % CENTERPITCHFREQS.length;
+    tempOsc.connect(tempGainNode);
+    tempOsc.start();
+    var tempLine = mkLine('ppline', tClr, tppclr, ppLinesIx, ppLinesSet);
+    var tppLineix = ppLinesIx;
+    ppLinesIx++;
+    var tNewGain = MINGAIN + -90 + equalLoudnessCalc(tempFreq, 90);
+    tNewGain = db2linamp(tNewGain);
+    envAtk2(tempGainNode.gain, 0, iRampTime, tNewGain);
+    // envAtk0(tempGainNode.gain, 6, tNewGain);
+    //Make oscillator without line for every new pitchpole
+    var tNewOscs = [];
+    for (var i = 0; i < oscLinesSet.length; i++) {
+      var tempGainNode2 = audioCtx.createGain();
+      tempGainNode2.gain.setValueAtTime(0, audioCtx.currentTime);
+      var tPanNode2 = audioCtx.createStereoPanner();
+      tempGainNode2.connect(tPanNode2);
+      tPanNode2.connect(audioCtx.destination);
+      var tempOsc2 = audioCtx.createOscillator();
+      tempOsc2.type = 'sine';
+      tempOsc2.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
+      tempOsc2.connect(tempGainNode2);
+      tempOsc2.start();
+      envAtk2(tempGainNode2.gain, 0, iRampTime, tNewGain);
+      // envAtk0(tempGainNode2.gain, 6, tNewGain);
+      var oscGr = [oscLinesSet[i], tempGainNode2, tempOsc2, tNewGain, oscLinesSet[i][4], tPanNode2];
+      oscillators.push(oscGr);
+      tNewOscs.push(oscGr);
+    }
+    var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs, tppLineix, tPanNode];
+    pitchPoles.push(ppGr);
+  }
+  // FUNCTION mkLine ---------------------------------------------------- //
   function mkLine(lineName, filterclr, lineclr, ix, lineset) {
     var templine = document.createElementNS(svgNS, 'line');
     var lineID = lineName + ix;
@@ -548,14 +672,13 @@
     var tY1Dir = 1;
     var tY2Dir = -1;
     var tYspd = rrand(MINYSPD, MAXYSPD);
-    console.log(tYspd);
     var tMvY = false;
     var tYMoving = false;
     var tempLineGroup = [templine, tempSpd, tempAccel, tHdir, ix, tYshrinkPt, tYspd, tMvY, tYMoving, lineID, tY1Dir, tY2Dir];
     lineset.push(tempLineGroup);
     return tempLineGroup;
   }
-  // FUNCTION: REMOVE BEATING OSCILLATOR rmvBOsc -------------------------- //
+  // FUNCTION: REMOVE BEATING OSCILLATOR rmvBOsc ------------------------ //
   function rmvBOsc() {
     if (oscLinesSet.length > 0) {
       var now = audioCtx.currentTime;
@@ -636,7 +759,7 @@
       pitchPoles.splice(tnumpp2rmv, 1);
     }
   }
-  // FUNCTION: mvLines ------------------------------------------------ //
+  // FUNCTION: mvLines -------------------------------------------------- //
   function mvLines(set) {
     for (var i = 0; i < set.length; i++) {
       var oldX = parseFloat(set[i][0].getAttributeNS(null, 'x1'));
@@ -720,47 +843,18 @@
       }
     }
   }
-  //FUNCTION mkPitchPole ------------------------------------------------ //
-  function mkPitchPole() {
-    // Make Gain Node ///////////////////////////////////
-    var tempGainNode = audioCtx.createGain();
-    tempGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    tempGainNode.connect(audioCtx.destination);
-    // Make Oscillator ///////////////////////////////////
-    var tempOsc = audioCtx.createOscillator();
-    tempOsc.type = 'sine';
-    var tempFreq = CENTERPITCHFREQS[pitchPolePitchIx];
-    var tempMidi = CENTERPITCHMIDI[pitchPolePitchIx];
-    var tClr = filterClrs[pitchPolePitchIx];
-    var tppclr = ppClrs[pitchPolePitchIx];
-    tempOsc.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
-    pitchPolePitchIx = (pitchPolePitchIx + 1) % CENTERPITCHFREQS.length;
-    tempOsc.connect(tempGainNode);
-    tempOsc.start();
-    var tempLine = mkLine('ppline', tClr, tppclr, ppLinesIx, ppLinesSet);
-    var tppLineix = ppLinesIx;
-    ppLinesIx++;
-    var tNewGain = MINGAIN + -90 + equalLoudnessCalc(tempFreq, 90);
-    tNewGain = db2linamp(tNewGain);
-    envAtk0(tempGainNode.gain, 6, tNewGain);
-    //Make oscillator without line for every new pitchpole
-    var tNewOscs = [];
+  // FUNCTION: pan ----------------------------------------------- //
+  function pan() {
     for (var i = 0; i < oscLinesSet.length; i++) {
-      var tempGainNode2 = audioCtx.createGain();
-      tempGainNode2.gain.setValueAtTime(0, audioCtx.currentTime);
-      tempGainNode2.connect(audioCtx.destination);
-      var tempOsc2 = audioCtx.createOscillator();
-      tempOsc2.type = 'sine';
-      tempOsc2.frequency.setValueAtTime(tempFreq, audioCtx.currentTime);
-      tempOsc2.connect(tempGainNode2);
-      tempOsc2.start();
-      envAtk0(tempGainNode2.gain, 6, tNewGain);
-      var oscGr = [oscLinesSet[i], tempGainNode2, tempOsc2, tNewGain, oscLinesSet[i][4]];
-      oscillators.push(oscGr);
-      tNewOscs.push(oscGr);
+      var tOscX = parseFloat(oscLinesSet[i][0].getAttributeNS(null, 'x1'));
+      var tpan = scale(tOscX, 0, canvasW, -1, 1);
+      tpan = clamp(tpan, -1, 1);
+      for (var j = 0; j < oscillators.length; j++) {
+        if (oscLinesSet[i][4] == oscillators[j][4]) {
+          oscillators[j][5].pan.setValueAtTime(tpan, audioCtx.currentTime);
+        }
+      }
     }
-    var ppGr = [tempLine, tempGainNode, tNewGain, tempOsc, tempFreq, tempMidi, tNewOscs, tppLineix];
-    pitchPoles.push(ppGr);
   }
   //FUNCTION mkStartBtn -------------------------------------------------- //
   function mkStartBtn() {
@@ -804,9 +898,9 @@
     var tblsz = 3000 * attackDur;
     var amptable = [];
     var attackAmpdb = linamp2db(attackAmp);
-    var inc = Math.abs((-80 - attackAmpdb) / tblsz);
+    var inc = Math.abs((MINGAIN - attackAmpdb) / tblsz);
     for (var i = 0; i < tblsz; i++) {
-      var tempamp = db2linamp(-80 + (inc * i));
+      var tempamp = db2linamp(MINGAIN + (inc * i));
       amptable.push(tempamp);
     }
     var now = audioCtx.currentTime;
@@ -823,7 +917,7 @@
     if (vcaGain.value != 0) {
       iAmpDb = linamp2db(vcaGain.value);
     } else {
-      iAmpDb = -80;
+      iAmpDb = MINGAIN;
     }
     var inc;
     if (attackAmpdb > iAmpDb) {
@@ -838,6 +932,14 @@
     var tStartTime = audioCtx.currentTime + attackStartTime;
     vcaGain.cancelScheduledValues(0);
     vcaGain.setValueCurveAtTime(amptable, tStartTime, attackDur);
+  }
+  //FUNCTION envAtk2 ------------------------------------------------------ //
+  function envAtk2(vcaGain, attackStartTime, attackDur, attackAmp) {
+    var now = audioCtx.currentTime;
+    var tStartTime = now + attackStartTime;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueAtTime(0, now);
+    vcaGain.linearRampToValueAtTime(attackAmp, (tStartTime + attackDur));
   }
   //FUNCTION envOff ------------------------------------------------------ //
   function envOff(vcaGain, releaseTime) {
@@ -953,10 +1055,14 @@
     spl = scale(ftom(freq), ftom(f[ix0]), ftom(f[ix1]), spl0, spl1);
     return spl;
   }
-  // FUNCTION: removeElement ---------------------------------------------- //
+  // FUNCTION: removeElement ------------------------------------------ //
   function removeElement(elementId) {
     var element = document.getElementById(elementId);
     element.parentNode.removeChild(element);
+  }
+  // FUNCTION: clamp ---------------------------------------------- //
+  function clamp(num, min, max) {
+    return num <= min ? min : num >= max ? max : num;
   }
 </script>
 
