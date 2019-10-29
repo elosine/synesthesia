@@ -7,18 +7,22 @@ myname.appendChild(nametxt);
 sidenavdiv.appendChild(myname);
 
 var m1 = document.createElement('a');
-var m1txt = document.createTextNode("A colony of black spots: Compositions for interactive sound and image");
+var m1txt = document.createTextNode("Home");
 m1.appendChild(m1txt);
-// m1.title = "Works:cronoligical";
-m1.href = "#works";
+m1.href = "index.html";
 sidenavdiv.appendChild(m1);
 
-var m2 = document.createElement('a');
-var m2txt = document.createTextNode("Works A colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound andA colony of black spots: Compositions for interactive sound and");
-m2.appendChild(m2txt);
-// m1.title = "Works:cronoligical";
-m2.href = "#works";
-sidenavdiv.appendChild(m2);
+var sidenavdiv = document.getElementById("sidenav");
+var cat = document.createElement('h5');
+var cattxt = document.createTextNode("WORKS:");
+cat.appendChild(cattxt);
+sidenavdiv.appendChild(cat);
+
+var m1 = document.createElement('a');
+var m1txt = document.createTextNode("A colony of black spots: compositions for interactive sound and image");
+m1.appendChild(m1txt);
+m1.href = "a_colony_of_black_spots.html";
+sidenavdiv.appendChild(m1);
 
 //resize main body div
 var mainbody = document.getElementById("main");
